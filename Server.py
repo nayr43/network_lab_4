@@ -13,14 +13,6 @@ sock.bind(server_address)
 total_received_bytes = 0
 prev_lead_seg_id = 0
 missing_packets = []
-# while True:
-#     data, address = sock.recvfrom(4096)
-#     if len(data) == 1:
-#         timestamp = time.time()
-#         break
-
-# Sleep else there will be float divison by zero error
-# time.sleep(0.5)
 
 while True:
     data, address = sock.recvfrom(4096)
@@ -30,9 +22,11 @@ while True:
         if (lead_seg_id in missing_packets):
             missing_packets.remove(lead_seg_id)
         else:
-            missing_packets.append(prev_lead_seg_id+1)
-        if (missing_packets[0] < lead_seg_id - 10):
-            print('Packet #%d has been dropped.' %(lead_seg_id) )
+            missing_packets.append(prev_lead_seg_id)
+        if (len(missing_packets) > 0):
+            if (missing_packets[0] < lead_seg_id - 10):
+                print('Warning: Packet #%d has been dropped.' %(lead_seg_id) )
+                missing_packets.remove(missing_packets[0])
 
     # donestamp = time.time()
     # data = len(data)
